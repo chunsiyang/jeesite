@@ -106,13 +106,11 @@ public class ActTaskService extends BaseService {
 	 */
 	public List<Act> todoList(Act act){
 		String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
-		
 		List<Act> result = new ArrayList<Act>();
 		
 		// =============== 已经签收的任务  ===============
 		TaskQuery todoTaskQuery = taskService.createTaskQuery().taskAssignee(userId).active()
 				.includeProcessVariables().orderByTaskCreateTime().desc();
-		
 		// 设置查询条件
 		if (StringUtils.isNotBlank(act.getProcDefKey())){
 			todoTaskQuery.processDefinitionKey(act.getProcDefKey());
@@ -157,6 +155,7 @@ public class ActTaskService extends BaseService {
 		// 查询列表
 		List<Task> toClaimList = toClaimQuery.list();
 		for (Task task : toClaimList) {
+
 			Act e = new Act();
 			e.setTask(task);
 			e.setVars(task.getProcessVariables());

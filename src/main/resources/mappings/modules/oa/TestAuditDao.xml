@@ -172,7 +172,7 @@
 	</update>
 	
 	<update id="updateMainLeadText">
-		UPDATE oa_test_audit SET 
+		UPDATE oa_test_audit SET
 			main_lead_text = #{mainLeadText},
 			update_by = #{updateBy.id}, 
 			update_date = #{updateDate}

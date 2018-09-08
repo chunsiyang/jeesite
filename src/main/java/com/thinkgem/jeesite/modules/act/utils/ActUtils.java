@@ -40,7 +40,8 @@ public class ActUtils {
 	 */
 	public static final String[] PD_LEAVE = new String[]{"leave", "oa_leave"};
 	public static final String[] PD_TEST_AUDIT = new String[]{"test_audit", "oa_test_audit"};
-	
+	public static final String[] PD_AD_REVIEW = new String[]{"adReview", "d_ad_revirw"};
+
 //	/**
 //	 * 流程定义Map（自动初始化）
 //	 */
