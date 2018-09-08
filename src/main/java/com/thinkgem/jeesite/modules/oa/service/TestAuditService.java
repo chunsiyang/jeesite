@@ -3,8 +3,13 @@
  */
 package com.thinkgem.jeesite.modules.oa.service;
 
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +56,7 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 		if (StringUtils.isBlank(testAudit.getId())){
 			testAudit.preInsert();
 			dao.insert(testAudit);
-			
+
 			// 启动流程
 			actTaskService.startProcess(ActUtils.PD_TEST_AUDIT[0], ActUtils.PD_TEST_AUDIT[1], testAudit.getId(), testAudit.getContent());
 			
@@ -71,13 +76,32 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 		}
 	}
 
+	@Autowired
+	HistoryService historyService;
+
+
 	/**
 	 * 审核审批保存
 	 * @param testAudit
 	 */
 	@Transactional(readOnly = false)
 	public void auditSave(TestAudit testAudit) {
-		
+
+		List<HistoricDetail> formProperties =
+				historyService.createHistoricDetailQuery().processInstanceId(testAudit.getAct().getProcInsId()).formProperties().list();
+		for (HistoricDetail historicDetail : formProperties) {
+			HistoricFormProperty field = (HistoricFormProperty) historicDetail;
+			System.out.println("field id: "
+					+ field.getPropertyId() +
+					", value: "
+					+ field.getPropertyValue());
+
+
+		}
+
+
+
+
 		// 设置意见
 		testAudit.getAct().setComment(("yes".equals(testAudit.getAct().getFlag())?"[同意] ":"[驳回] ")+testAudit.getAct().getComment());
 		
@@ -85,7 +109,8 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 		
 		// 对不同环节的业务逻辑进行操作
 		String taskDefKey = testAudit.getAct().getTaskDefKey();
-
+		// TODO
+		testAudit.getAct();
 		// 审核环节
 		if ("audit".equals(taskDefKey)){
 			

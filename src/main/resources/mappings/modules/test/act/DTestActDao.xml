@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.test.dao.act.DTestActDao">
+    
+	<sql id="dTestActColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.age AS "age",
+		a.phone AS "phone"
+	</sql>
+	
+	<sql id="dTestActJoins">
+	</sql>
+    
+	<select id="get" resultType="DTestAct">
+		SELECT 
+			<include refid="dTestActColumns"/>
+		FROM d_test_act a
+		<include refid="dTestActJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DTestAct">
+		SELECT 
+			<include refid="dTestActColumns"/>
+		FROM d_test_act a
+		<include refid="dTestActJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DTestAct">
+		SELECT 
+			<include refid="dTestActColumns"/>
+		FROM d_test_act a
+		<include refid="dTestActJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO d_test_act(
+			id,
+			name,
+			age,
+			phone
+		) VALUES (
+			#{id},
+			#{name},
+			#{age},
+			#{phone}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE d_test_act SET 	
+			name = #{name},
+			age = #{age},
+			phone = #{phone}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM d_test_act
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
